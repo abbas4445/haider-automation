@@ -4,14 +4,78 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
-num = random.randint(100000, 999999)
+import string
+from datetime import datetime
+
+# Auto-generate unique credentials
+def generate_unique_credentials():
+    """Generate unique credentials that meet all requirements"""
+    
+    # Generate timestamp for uniqueness
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    random_suffix = ''.join(random.choices(string.digits, k=4))
+    
+    # Generate Full Name (first name + last name)
+    first_names = ["James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles",
+                   "Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah", "Karen"]
+    last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
+                  "Wilson", "Anderson", "Taylor", "Thomas", "Moore", "Jackson", "Martin", "Lee", "Thompson", "White"]
+    
+    full_name = f"{random.choice(first_names)} {random.choice(last_names)}"
+    
+    # Generate Email (unique with timestamp)
+    email_prefix = f"user{timestamp}{random_suffix}"
+    email_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "protonmail.com"]
+    email = f"{email_prefix}@{random.choice(email_domains)}"
+    
+    # Generate Username (3-50 chars, lowercase letters and numbers only)
+    username = f"user{timestamp}{random_suffix}".lower()
+    
+    # Generate Password (8-32 chars, 1 lowercase, 1 uppercase, 1 number, 1 special char)
+    password_length = random.randint(12, 20)
+    
+    # Ensure we have at least one of each required character type
+    password_chars = [
+        random.choice(string.ascii_lowercase),  # At least 1 lowercase
+        random.choice(string.ascii_uppercase),  # At least 1 uppercase
+        random.choice(string.digits),           # At least 1 number
+        random.choice("!@#$%^&*()_+-=[]{}|;:,.<>?")  # At least 1 special char
+    ]
+    
+    # Fill the rest randomly
+    all_chars = string.ascii_letters + string.digits + "!@#$%^&*()_+-=[]{}|;:,.<>?"
+    password_chars += [random.choice(all_chars) for _ in range(password_length - 4)]
+    
+    # Shuffle to make it random
+    random.shuffle(password_chars)
+    password = ''.join(password_chars)
+    
+    return {
+        'full_name': full_name,
+        'email': email,
+        'username': username,
+        'password': password
+    }
 
 # Configuration
 REGISTRATION_URL = "https://app.ecox.network/register?refCode=AWAISLAYYAH05"
-FULL_NAME = "Your Full Name"
-EMAIL = f"your.email{num}@example.com"
-PASSWORD = "YourP@ssw0rd123!"  # Must meet all password requirements
-USERNAME = f"yourusername{num}".lower()  # Username for ECOX platform (3-50 chars, lowercase letters and numbers only)
+
+# Generate unique credentials
+credentials = generate_unique_credentials()
+FULL_NAME = credentials['full_name']
+EMAIL = credentials['email']
+USERNAME = credentials['username']
+PASSWORD = credentials['password']
+
+# Print generated credentials for reference
+print("\n" + "="*60)
+print("GENERATED CREDENTIALS (SAVE THESE!):")
+print("="*60)
+print(f"Full Name: {FULL_NAME}")
+print(f"Email: {EMAIL}")
+print(f"Username: {USERNAME}")
+print(f"Password: {PASSWORD}")
+print("="*60 + "\n")
 
 def setup_driver():
     """Setup undetected Chrome driver to bypass Cloudflare"""
@@ -63,6 +127,23 @@ def debug_page_elements(driver):
               f"placeholder='{inp.get_attribute('placeholder')}', "
               f"name='{inp.get_attribute('name')}'")
     print("===================================\n")
+
+def save_credentials_to_file(creds):
+    """Save credentials to a text file"""
+    try:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open("ecox_accounts.txt", "a", encoding="utf-8") as f:
+            f.write(f"\n{'='*60}\n")
+            f.write(f"Registration Date: {timestamp}\n")
+            f.write(f"Full Name: {creds['full_name']}\n")
+            f.write(f"Email: {creds['email']}\n")
+            f.write(f"Username: {creds['username']}\n")
+            f.write(f"Password: {creds['password']}\n")
+            f.write(f"Referral Code: AWAISLAYYAH05\n")
+            f.write(f"{'='*60}\n")
+        print(f"\n💾 Credentials saved to 'ecox_accounts.txt'")
+    except Exception as e:
+        print(f"⚠️ Could not save credentials to file: {e}")
 
 def handle_cloudflare(driver, max_wait=30):
     """Wait for Cloudflare to auto-solve with undetected-chromedriver"""
@@ -350,8 +431,12 @@ def automate_ecox_registration():
                             
                             if "dashboard" in final_url or "home" in final_url or "account" in final_url:
                                 print("✅✅ Successfully registered and logged in!")
+                                
+                                # Save credentials to file
+                                save_credentials_to_file(credentials)
                             else:
                                 print("ℹ️ Please check the browser for final status")
+                                save_credentials_to_file(credentials)
                         else:
                             print("⚠️ Could not find Register button on username page")
                             print("Please click it manually")
