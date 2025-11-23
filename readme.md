@@ -18,8 +18,8 @@ cd haider-automation
 ```bash
 python -m venv venv
 # Activate the environment
-source venv/bin/activate      # Linux / Mac
-venv\Scripts\activate         # Windows
+venv\Scripts\activate         # For Windows
+source venv/bin/activate      # For Linux / Mac
 ```
 
 ### 3. Install dependencies
