@@ -9,7 +9,7 @@ This project automates the signup process on the ECOX platform using **Selenium*
 ### 1. Clone the project
 
 ```bash
-git clone [<your-repo-url>](https://github.com/abbas4445/haider-automation.git)
+git clone [<https://github.com/abbas4445/haider-automation.git>]
 cd heaider-automation
 ```
 
