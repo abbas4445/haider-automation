@@ -86,10 +86,10 @@ def create_ecox_account():
     """Creates ONE account and returns (email, username, password)"""
     
     # Generate random unique number
-    num = random.randint(100000, 999999)
+    num = random.randint(100000, 99999999999999999)
 
     FULL_NAME = BASE_FULL_NAME
-    EMAIL = f"{BASE_EMAIL}{num}@example.com"
+    EMAIL = f"{BASE_EMAIL}{num}@gmail.com"
     USERNAME = f"{BASE_USERNAME}{num}".lower()
 
     driver = setup_driver()
