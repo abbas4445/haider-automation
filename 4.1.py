@@ -82,10 +82,81 @@ def handle_cloudflare(driver, max_wait=30):
 # REGISTRATION FUNCTION (1 ACCOUNT)
 # =====================================
 
+# def create_ecox_account():
+#     """Creates ONE account and returns (email, username, password)"""
+    
+#     # Generate random unique number
+#     num = random.randint(100000, 99999999999999999)
+
+#     FULL_NAME = BASE_FULL_NAME
+#     EMAIL = f"{BASE_EMAIL}{num}@gmail.com"
+#     USERNAME = f"{BASE_USERNAME}{num}".lower()
+
+#     driver = setup_driver()
+
+#     try:
+#         print(f"\n=== Creating account for {EMAIL} ===")
+
+#         driver.get(REGISTRATION_URL)
+#         handle_cloudflare(driver)
+
+#         # Try clicking Skip if visible
+#         try:
+#             wait_and_click(driver, By.XPATH, "//button[text()='Skip']", timeout=5)
+#             time.sleep(2)
+#         except:
+#             pass
+
+#         # Fill Full Name
+#         all_inputs = driver.find_elements(By.TAG_NAME, "input")
+#         text_inputs = [i for i in all_inputs if i.get_attribute("type") == "text"]
+
+#         if text_inputs:
+#             text_inputs[0].send_keys(FULL_NAME)
+
+#         # Fill Email
+#         for inp in all_inputs:
+#             if inp.get_attribute("type") == "email":
+#                 inp.send_keys(EMAIL)
+
+#         # Fill Password + Confirm Password
+#         password_inputs = [i for i in all_inputs if i.get_attribute("type") == "password"]
+#         if len(password_inputs) >= 2:
+#             password_inputs[0].send_keys(PASSWORD)
+#             password_inputs[1].send_keys(PASSWORD)
+
+#         # Click Register Button
+#         try:
+#             wait_and_click(driver, By.XPATH, "//button[@type='submit']", timeout=7)
+#         except:
+#             print("Manual click required. Waiting 15 seconds...")
+#             time.sleep(15)
+
+#         time.sleep(5)
+
+#         # Username Page
+#         if "username" in driver.page_source.lower():
+#             print("Username page detected...")
+#             try:
+#                 wait_and_send_keys(driver, By.XPATH, "//input", USERNAME, timeout=5)
+#                 wait_and_click(driver, By.XPATH, "//button[@type='submit']", timeout=7)
+#             except:
+#                 pass
+
+#         print("✔ Account created!")
+
+#         return EMAIL, USERNAME, PASSWORD
+
+#     except Exception as e:
+#         print("❌ Error:", e)
+#         return None
+
+#     finally:
+#         driver.quit()
+
 def create_ecox_account():
     """Creates ONE account and returns (email, username, password)"""
     
-    # Generate random unique number
     num = random.randint(100000, 99999999999999999)
 
     FULL_NAME = BASE_FULL_NAME
@@ -100,32 +171,27 @@ def create_ecox_account():
         driver.get(REGISTRATION_URL)
         handle_cloudflare(driver)
 
-        # Try clicking Skip if visible
         try:
             wait_and_click(driver, By.XPATH, "//button[text()='Skip']", timeout=5)
             time.sleep(2)
         except:
             pass
 
-        # Fill Full Name
         all_inputs = driver.find_elements(By.TAG_NAME, "input")
         text_inputs = [i for i in all_inputs if i.get_attribute("type") == "text"]
 
         if text_inputs:
             text_inputs[0].send_keys(FULL_NAME)
 
-        # Fill Email
         for inp in all_inputs:
             if inp.get_attribute("type") == "email":
                 inp.send_keys(EMAIL)
 
-        # Fill Password + Confirm Password
         password_inputs = [i for i in all_inputs if i.get_attribute("type") == "password"]
         if len(password_inputs) >= 2:
             password_inputs[0].send_keys(PASSWORD)
             password_inputs[1].send_keys(PASSWORD)
 
-        # Click Register Button
         try:
             wait_and_click(driver, By.XPATH, "//button[@type='submit']", timeout=7)
         except:
@@ -134,7 +200,6 @@ def create_ecox_account():
 
         time.sleep(5)
 
-        # Username Page
         if "username" in driver.page_source.lower():
             print("Username page detected...")
             try:
@@ -152,6 +217,8 @@ def create_ecox_account():
         return None
 
     finally:
+        print("⏳ Keeping browser open for 10 seconds...")
+        time.sleep(10)
         driver.quit()
 
 
